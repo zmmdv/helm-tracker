@@ -152,7 +152,7 @@ func NewMonitor(client *kubernetes.Clientset, log *logrus.Logger) *Monitor {
 
 func (m *Monitor) loadConfig() (*Config, error) {
     m.log.Debug("Loading repository configuration")
-    configPath := "/etc/helm-monitor/repositories.yaml"
+    configPath := "/etc/helm-tracker/repositories.yaml"
     
     if _, err := os.Stat(configPath); os.IsNotExist(err) {
         return nil, fmt.Errorf("config file does not exist at %s", configPath)

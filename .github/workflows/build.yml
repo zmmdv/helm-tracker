@@ -7,23 +7,36 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      version_type:
-        description: 'Version type to bump (major, minor, patch)'
-        required: true
-        type: choice
-        options:
-          - major
-          - minor
-          - patch
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  semantic-release:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.semantic.outputs.new_version }}
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          semantic_version: 19
+          extra_plugins: |
+            @semantic-release/git
+            @semantic-release/changelog
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build-and-push:
+    needs: semantic-release
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -60,7 +73,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,prefix=,format=short
+            type=raw,value=${{ needs.semantic-release.outputs.new_version }},enable=${{ needs.semantic-release.outputs.new_release_published == 'true' }}
+            type=sha,prefix=,format=short,enable=${{ needs.semantic-release.outputs.new_release_published != 'true' }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5

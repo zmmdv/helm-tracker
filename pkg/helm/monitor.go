@@ -410,7 +410,7 @@ func (m *Monitor) CheckUpdates() {
             }
 
             if latest.GreaterThan(current) {
-                updateMsg := fmt.Sprintf("•     *release*: %s\n      *namespace*: %s\n      *installed*: %s\n      *latest in remote repo*: %s\n",
+                updateMsg := fmt.Sprintf("•    *release*: %s\n      *namespace*: %s\n      *installed*: %s\n      *latest in remote repo*: %s\n",
                     release.Name, 
                     release.Namespace, 
                     currentVersion, 

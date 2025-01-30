@@ -77,12 +77,11 @@ When updates are available, the application sends formatted messages to Slack:
 • monitoring-tempo in namespace monitoring: 1.14.0 → 1.18.1
 • nats in namespace nats: 8.3.0 → 9.0.1
 • redis-cluster in namespace redis: 11.0.3 → 11.4.1
+Next notification will be sent after: 2024-01-20 12:00:00
 ```
 
 ![image](https://github.com/user-attachments/assets/dea6f9de-fc20-4649-b90d-699a786f5188)
 
-
-Next notification will be sent after: 2024-01-20 12:00:00
 
 ## Building from Source
 

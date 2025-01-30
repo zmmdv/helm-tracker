@@ -124,7 +124,7 @@ func (n *NotificationService) SendSlackNotification(updates []string, interval t
     // Create a formatted message with identifier
     message := "[HELM-MONITOR] *Helm Chart Updates Available:*\n"
     message += strings.Join(updates, "\n")
-    message += fmt.Sprintf("\n\n_Next notification will be sent after: %s_", 
+    message += fmt.Sprintf("\n\n_Next notification will be sent after: UTC %s_", 
         time.Now().Add(interval).Format("2006-01-02 15:04:05"))
 
     payload := SlackMessage{

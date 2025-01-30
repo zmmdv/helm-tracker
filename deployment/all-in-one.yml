@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: helm-monitor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: helm-monitor
+rules:
+- apiGroups: [""]
+  resources: ["pods", "namespaces", "services", "configmaps", "secrets", "events", "serviceaccounts"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "daemonsets", "replicasets", "statefulsets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["storage.k8s.io"]
+  resources: ["storageclasses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles", "rolebindings", "clusterroles", "clusterrolebindings"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: helm-monitor
+subjects:
+- kind: ServiceAccount
+  name: helm-monitor
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: helm-monitor
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: helm-monitor
+  name: helm-monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helm-monitor
+  template:
+    metadata:
+      labels:
+        app: helm-monitor
+    spec:
+      containers:
+      - env:
+        - name: CHECK_INTERVAL
+          value: 1m
+        - name: LOG_LEVEL
+          value: info
+        - name: XDG_CACHE_HOME
+          value: /tmp/.cache
+        - name: HELM_CACHE_HOME
+          value: /tmp/.cache/helm
+        - name: GOGC
+          value: "50"
+        - name: GOMEMLIMIT
+          value: 400MiB
+        image: ghcr.io/zmmdv/helm-tracker:latest
+        imagePullPolicy: Always
+        name: helm-monitor
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /etc/helm-monitor
+          name: config-volume
+        - mountPath: /tmp
+          name: cache-volume
+      serviceAccount: helm-monitor
+      volumes:
+      - configMap:
+          name: helm-monitor-config
+        name: config-volume
+      - emptyDir: {}
+        name: cache-volume
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helm-monitor-config
+data:
+  repositories.yaml: |
+    notifications:
+      enabled: true
+    repositories:
+      - name: prometheus-community
+        url: https://prometheus-community.github.io/helm-charts
+        charts:
+          prometheus-stack:
+            installed_name: monitoring-kube-prometheus-stack
+            remote_name: kube-prometheus-stack
+          prometheus:
+            installed_name: monitoring-prometheus-read
+            remote_name: prometheus
+
+      - name: grafana
+        url: https://grafana.github.io/helm-charts
+        charts:
+          tempo:
+            installed_name: monitoring-tempo
+            remote_name: tempo
+          loki:
+            installed_name: monitoring-loki
+            remote_name: loki
+          promtail:
+            installed_name: monitoring-promtail
+            remote_name: promtail
+
+      - name: hashicorp
+        url: https://helm.releases.hashicorp.com
+        charts:
+          vault:
+            installed_name: vault-vault
+            remote_name: vault
+
+      - name: bitnami
+        url: https://charts.bitnami.com/bitnami
+        charts:
+          nats:
+            installed_name: nats
+            remote_name: nats
+          redis-cluster:
+            installed_name: redis-cluster
+            remote_name: redis-cluster
+          postgresql:
+            installed_name: postgresql
+            remote_name: postgresql

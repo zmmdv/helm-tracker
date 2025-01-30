@@ -70,7 +70,7 @@ spec:
           value: "50"
         - name: GOMEMLIMIT
           value: 400MiB
-        image: ghcr.io/zmmdv/helm-tracker:latest
+        image: ghcr.io/zmmdv/helm-tracker:1.0.2
         imagePullPolicy: Always
         name: helm-monitor
         resources:

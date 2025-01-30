@@ -70,13 +70,14 @@ The application runs with:
 
 When updates are available, the application sends formatted messages to Slack:
 
+```
 [HELM-MONITOR] Helm Chart Updates Available:
 • monitoring-loki in namespace monitoring: 6.22.0 → 6.25.0
 • monitoring-prometheus-read in namespace monitoring: 26.1.0 → 27.1.0
 • monitoring-tempo in namespace monitoring: 1.14.0 → 1.18.1
 • nats in namespace nats: 8.3.0 → 9.0.1
 • redis-cluster in namespace redis: 11.0.3 → 11.4.1
-
+```
 Next notification will be sent after: 2024-01-20 12:00:00
 
 ## Building from Source

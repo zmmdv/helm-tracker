@@ -410,8 +410,11 @@ func (m *Monitor) CheckUpdates() {
             }
 
             if latest.GreaterThan(current) {
-                updateMsg := fmt.Sprintf("• %s in namespace %s: %s → %s",
-                    release.Name, release.Namespace, currentVersion, latestVersion)
+                updateMsg := fmt.Sprintf("• \t*release*: %s\n\t*namespace*: %s\n\t*installed*: %s\n\t*latest in remote repo*: %s\n",
+                    release.Name, 
+                    release.Namespace, 
+                    currentVersion, 
+                    latestVersion)
                 updates = append(updates, updateMsg)
                 
                 m.log.Infof("Update available for helm release: %s in namespace: %s, current version: %s, latest version: %s",

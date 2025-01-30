@@ -72,16 +72,26 @@ When updates are available, the application sends formatted messages to Slack:
 
 ```
 [HELM-MONITOR] Helm Chart Updates Available:
-• monitoring-loki in namespace monitoring: 6.22.0 → 6.25.0
-• monitoring-prometheus-read in namespace monitoring: 26.1.0 → 27.1.0
-• monitoring-tempo in namespace monitoring: 1.14.0 → 1.18.1
-• nats in namespace nats: 8.3.0 → 9.0.1
-• redis-cluster in namespace redis: 11.0.3 → 11.4.1
-Next notification will be sent after: 2024-01-20 12:00:00
+•    release: application-keto-admin
+      namespace: application
+      installed: 0.50.6
+      latest in remote repo: 0.50.7
+•    release: application-kratos-admin
+      namespace: application
+      installed: 0.50.6
+      latest in remote repo: 0.50.7
+•    release: aws-efs-csi-driver-production
+      namespace: kube-system
+      installed: 2.4.8
+      latest in remote repo: 3.1.5
+•    release: aws-load-balancer-controller-production
+      namespace: kube-system
+      installed: 1.8.1
+      latest in remote repo: 1.11.0
+Next notification will be sent after: UTC 2025-02-06 20:33:00
 ```
 
-![image](https://github.com/user-attachments/assets/dea6f9de-fc20-4649-b90d-699a786f5188)
-
+![image](https://github.com/user-attachments/assets/8a1247f4-f40a-4317-ab82-a66e2f0940b1)
 
 ## Building from Source
 
